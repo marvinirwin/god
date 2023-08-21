@@ -1,4 +1,4 @@
-import { Client, Partials} from 'discord.js';
+import { Client, Partials, GatewayIntentBits} from 'discord.js';
 import { GoalManager, GoalManagerImpl } from './GoalManager';
 import { VoteManager, VoteManagerImpl } from './VoteManager';
 import { InsultGenerator } from './InsultGenerator';
@@ -15,8 +15,11 @@ export class DiscordBotImpl {
     insultGenerator: InsultGenerator,
     ) {
     this.client = new Client({
-      intents: ['GuildMessages', 'GuildMembers'],
-      partials: [Partials.Message, Partials.Channel, Partials.Reaction],
+      intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+      ],
     });
     this.goalManager = goalManager;
     this.voteManager = voteManager;
