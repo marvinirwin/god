@@ -49,7 +49,7 @@ export class VoteManagerImpl implements VoteManager {
 
   async tallyVotes(goalId: number): Promise<[number, number]> {
     const votes = await this.voteStore.getVotes(goalId);
-    return [votes.filter(vote => vote.vote).length, votes.length];
+    return [votes.filter(vote => vote.vote).length, votes.filter(vote => !vote.vote).length];
   }
 }
 

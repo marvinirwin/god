@@ -13,7 +13,7 @@ describe('GoalManager', () => {
   it('should create a goal', async () => {
     const goalId = await goalManager.createGoal('user1', 'goal1', new Date());
     const goal = await goalStore.get(goalId);
-    expect(goal).toEqual(new Goal('user1', 'goal1', expect.any(Date), goalId));
+    expect(goal).toEqual({userId: 'user1', description: 'goal1', dueDate: expect.any(Date), id: goalId});
   });
 
   it('should delete a goal', async () => {
@@ -26,7 +26,7 @@ describe('GoalManager', () => {
   it('should get a goal', async () => {
     const goalId = await goalManager.createGoal('user1', 'goal1', new Date());
     const goal = await goalManager.getGoal(goalId);
-    expect(goal).toEqual(new Goal('user1', 'goal1', expect.any(Date), goalId));
+    expect(goal).toEqual({userId: 'user1', description: 'goal1', dueDate: expect.any(Date), id: goalId});
   });
 });
 

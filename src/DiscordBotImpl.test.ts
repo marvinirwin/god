@@ -24,6 +24,6 @@ describe('DiscordBot', () => {
     const goalId = await bot.handleGoalCommand(userId, goal, dueDate);
 
     expect(goalId).toBeDefined();
-    expect(await goalManager.getGoal(goalId)).toEqual({ userId, goal, dueDate });
+    expect(await goalManager.getGoal(goalId)).toMatchObject({ userId, description: goal, dueDate });
   });
 });

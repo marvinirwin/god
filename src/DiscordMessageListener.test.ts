@@ -19,7 +19,7 @@ describe('DiscordMessageListenerImpl', () => {
 
   it('should parse commands correctly', () => {
     const message = {
-      content: 'createGoal userId goal dueDate',
+      content: 'createGoal goal dueDate',
       author: { id: 'userId' },
     };
     const command = listener.parseCommand(message);

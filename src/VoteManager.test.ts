@@ -15,6 +15,6 @@ describe('VoteManager', () => {
     await voteManager.castVote('user3', 1, true);
 
     const tally = await voteManager.tallyVotes(1);
-    expect(tally).toEqual(2);
+    expect(tally).toEqual([ 2, 1 ]);
   });
 });

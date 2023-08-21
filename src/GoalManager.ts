@@ -1,10 +1,8 @@
-export class Goal {
-  constructor(
-    public userId: string,
-    public description: string,
-    public dueDate: Date,
-    public id: number
-  ) {}
+export interface Goal {
+  userId: string;
+  description: string;
+  dueDate: Date;
+  id: number;
 }
 export interface GoalStore {
   save(goal: Goal): Promise<number>;
@@ -67,7 +65,7 @@ export class GoalManagerImpl implements GoalManager {
 
   async createGoal(userId: string, goal: string, dueDate: Date): Promise<number> {
     const id = Math.floor(Math.random() * 10000);
-    const newGoal = new Goal(userId, goal, dueDate, id);
+    const newGoal = {userId, dueDate, id, description: goal};
     return this.goalStore.save(newGoal);
   }
 
