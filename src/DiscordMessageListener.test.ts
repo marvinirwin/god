@@ -21,9 +21,10 @@ describe('DiscordMessageListenerImpl', () => {
     const message = {
       content: 'createGoal goal dueDate',
       author: { id: 'userId' },
+      channelId: 'channelId'
     };
     const command = listener.parseCommand(message);
-    expect(command).toEqual(new Command('createGoal', 'userId', ['goal', 'dueDate']));
+    expect(command).toEqual(new Command('createGoal', 'userId', ['goal', 'dueDate'], 'channelId'));
   });
 
   // Add more tests here

@@ -12,7 +12,8 @@ export class Command {
   constructor(
     public commandType: string, // The type of command, e.g., 'createGoal', 'castVote', 'checkGoal'
     public userId: string, // The ID of the user who sent the command
-    public params: any // The parameters of the command, e.g., goal details, vote details
+    public params: any, // The parameters of the command, e.g., goal details, vote details
+    public channelId: string
   ) { }
 }
 
@@ -29,18 +30,21 @@ export class DiscordMessageListenerImpl implements DiscordMessageListener {
     await this.bot.start(); // Start the bot
     // Listen for 'messageCreate' events, parse the message into a Command, and handle the command
     this.bot.client.on('messageCreate', async (message: Message) => {
+      console.log(message.content)
       const command = this.parseCommand(message);
-      console.log(command)
       if (command) {
         await this.handleCommand(command);
       }
     });
+    this.bot.client.on("debug", console.log)
+      .on("warn", console.log)
     console.log('started listening');
     // List the channels the bot is listening on
     this.bot.client.on('ready', () => {
       // Your code here
       this.bot.client.channels.cache.forEach((channel) => {
-        console.log(`Listening on channel: ${channel.id}`);
+        //@ts-ignore
+        console.log(channel.name);
       });
     });
   }
@@ -51,13 +55,13 @@ export class DiscordMessageListenerImpl implements DiscordMessageListener {
   }
 
   // Method to parse a message into a Command
-  public parseCommand(message: { content: string, author: { id: string } }): Command | null {
-    const parts = message.content.split(' '); // Split the message content into parts
+  public parseCommand(message: { content: string, author: { id: string } , channelId: string}): Command | null {
+    const parts = message.content.match(/(?:[^\s"]+|"[^"]*")+/g); // Split the message content into parts, allowing for parts with spaces if surrounded by unescaped double quotes
     const commandType = parts[0]; // The first part is the command type
     const userId = message.author.id; // The author's ID is the user ID
-    const params = parts.slice(1); // The rest of the parts are the command parameters
+    const params = parts.slice(1).map(part => part.replace(/"/g, '')); // The rest of the parts are the command parameters, remove double quotes if any
 
-    return new Command(commandType, userId, params); // Return a new Command object
+    return new Command(commandType, userId, params, message.channelId); // Return a new Command object
   }
 
   // Method to handle a Command
@@ -90,10 +94,12 @@ export class DiscordMessageListenerImpl implements DiscordMessageListener {
   }
 
   // Method to send a message to a user
-  private sendMessage(userId: string, message: string): void {
-    const channel = this.bot.client.channels.cache.get(userId);
+  private sendMessage(channelId: string, message: string): void {
+    const channel = this.bot.client.channels.cache.get(channelId);
     if (this.isTextOrDMChannel(channel)) {
       channel.send(message);
+    } else {
+      console.log(channel)
     }
   }
 
